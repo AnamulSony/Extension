@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot Sidebar</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Enhanced message container */
+        #messages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+    /* Smooth scroll and message transitions */
+        #chatContainer {
+            scroll-behavior: smooth;
+        }
+
+    /* Link styling */
+        #messages a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        /* Custom scrollbar */
+        #chatContainer::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chatContainer::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        #chatContainer::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        #chatContainer::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 h-screen flex flex-col">
+    <div class="flex-1 max-w-md mx-auto w-full flex flex-col bg-white shadow-2xl rounded-xl overflow-hidden">
+        <!-- Chat Header -->
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="ai-avatar.png" alt="AI" class="w-10 h-10 rounded-full border-2 border-white">
+                <div>
+                    <h2 class="text-lg font-bold">AI Assistant</h2>
+                    <p class="text-xs text-blue-100">Online • Ready to help</p>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <button id="newChatBtn" class="bg-white/20 hover:bg-white/30 p-2 rounded-full transition">
+                    <i class="fas fa-plus text-white"></i>
+                </button>
+                <button id="settingsBtn" class="bg-white/20 hover:bg-white/30 p-2 rounded-full transition">
+                    <i class="fas fa-cog text-white"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div 
+            id="chatContainer" 
+            class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+        >
+            <div id="messages" class="flex flex-col space-y-3">
+                <!-- Welcome Message -->
+                <div class="self-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm shadow-md">
+                    <i class="fas fa-sparkles mr-2"></i>
+                    Welcome! How can I assist you today?
+                </div>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div 
+            id="typingIndicator" 
+            class="hidden px-4 py-2 bg-gray-100"
+        >
+            <div class="flex items-center space-x-2">
+                <div class="animate-bounce w-2 h-2 bg-gray-500 rounded-full"></div>
+                <div class="animate-bounce delay-100 w-2 h-2 bg-gray-500 rounded-full"></div>
+                <div class="animate-bounce delay-200 w-2 h-2 bg-gray-500 rounded-full"></div>
+                <span class="text-sm text-gray-600 ml-2">AI is typing...</span>
+            </div>
+        </div>
+
+        <!-- Message Input Area -->
+        <div class="p-4 bg-white border-t">
+            <div class="flex space-x-2">
+                <div class="relative flex-1">
+                    <input 
+                        type="text" 
+                        id="userInput" 
+                        placeholder="Type your message..." 
+                        class="w-full p-3 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                    <i class="fas fa-comment-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+                <button 
+                    id="sendBtn" 
+                    class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-3 rounded-full hover:from-blue-600 hover:to-purple-700 transition"
+                >
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="sidebar.js"></script>
+</body>
+</html>
