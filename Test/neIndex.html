@@ -1,0 +1,56 @@
+<html>
+    <script>
+      let golobalId = 1;
+
+      function markAsDone(index){
+
+        const parent = document.getElementById(index);
+        parent.children[2].innerHTML = "Done!"
+
+      }
+      function createChild(title , description , index){
+        const child = document.createElement("div")
+        const firstGrandChild = document.createElement("div");
+        firstGrandChild.innerHTML = title;
+        const secondGrandChild  = document.createElement("div");
+        secondGrandChild.innerHTML = description;
+        const  threeGrandChild = document.createElement("button");
+        threeGrandChild.innerHTML = "Mark as done";
+        threeGrandChild.setAttribute("onclick", `markAsDone(${index})`)
+
+        child.appendChild(firstGrandChild);
+        child.appendChild(secondGrandChild);
+        child.appendChild(threeGrandChild);
+
+        child.setAttribute("id", index);
+
+        console.log(child);
+
+        return child;
+
+
+      }
+      function addTodo(){
+        const titel = document.getElementById("titel").value;
+        const description = document.getElementById("description").value;
+        const parent = document.getElementById("container");
+
+        
+
+        parent.appendChild(createChild(titel, description, golobalId ))
+        golobalId += 1;
+
+      }
+    </script>
+    <div>
+        <input id = "titel" type="text" placeholder="title" > </input><br>
+        <input id = "description" type="text" placeholder="description" > </input><br>
+        <button onclick="addTodo()">Add todo</button>
+
+        <div id="container"></div>
+        
+
+        
+
+    </div>
+</html>

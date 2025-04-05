@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Chat Interface</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom Background and Scrollbar */
+        body {
+            background: linear-gradient(135deg, #f6f8f9 0%, #e5ebee 100%);
+        }
+
+        .chat-container {
+            background: 
+                linear-gradient(
+                    rgba(255,255,255,0.9), 
+                    rgba(255,255,255,0.9)
+                ), 
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.05),
+                0 10px 20px -5px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Enhanced Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.3);
+        }
+
+        /* Message Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-animation {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex">
+    <!-- Sidebar -->
+    <div class="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
+        <!-- Sidebar Header -->
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-gray-800">
+                <i class="fas fa-robot mr-2 text-blue-500"></i>
+                AI Chat
+            </h2>
+        </div>
+
+        <!-- Chat Themes -->
+        <div class="p-4">
+            <h3 class="text-sm font-semibold text-gray-600 mb-2">Chat Themes</h3>
+            <div class="grid grid-cols-4 gap-2">
+                <button class="w-8 h-8 bg-blue-500 rounded-full"></button>
+                <button class="w-8 h-8 bg-green-500 rounded-full"></button>
+                <button class="w-8 h-8 bg-purple-500 rounded-full"></button>
+                <button class="w-8 h-8 bg-pink-500 rounded-full"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chat Interface -->
+    <main class="flex-1 flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white mr-3">
+                    <i class="fas fa-robot text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold gradient-text">AI Assistant</h2>
+                    <p class="text-xs text-gray-500">Always ready to help</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div 
+            id="chatContainer" 
+            class="
+                flex-1 
+                overflow-y-auto 
+                p-6 
+                custom-scrollbar 
+                chat-container 
+                space-y-4 
+                relative
+            "
+        >
+            <!-- Welcome Message -->
+            <div class="flex justify-start message-animation">
+                <div class="
+                    max-w-[70%] 
+                    bg-white 
+                    border 
+                    border-gray-200 
+                    rounded-xl 
+                    rounded-tl-none 
+                    p-4 
+                    shadow-sm
+                ">
+                    <p class="text-gray-700">
+                        Hello! I'm your AI assistant. Feel free to ask me anything, and I'll do my best to help you.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-4 bg-white border-t border-gray-200">
+            <div class="relative">
+                <textarea 
+                    id="chatInput"
+                    rows="3"
+                    class="
+                        w-full 
+                        px-4 
+                        py-3 
+                        border 
+                        border-gray-300 
+                        rounded-xl 
+                        focus:outline-none 
+                        focus:ring-2 
+                        focus:ring-blue-500 
+                        resize-none 
+                        pr-20
+                    "
+                    placeholder="Type your message..."
+                ></textarea>
+
+                <!-- Action Buttons -->
+                <div class="absolute right-3 bottom-3 flex items-center space-x-2">
+                    <button class="text-gray-500 hover:text-blue-500">
+                        <i class="fas fa-smile"></i>
+                    </button>
+                    <button 
+                        id="sendButton"
+                        class="
+                            bg-gradient-to-r 
+                            from-blue-500 
+                            to-purple-600 
+                            text-white 
+                            rounded-full 
+                            w-10 
+                            h-10 
+                            flex 
+                            items-center 
+                            justify-center 
+                            hover:opacity-90 
+                            transition
+                        "
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const chatContainer = document.getElementById('chatContainer');
+
+        // Message Types
+        const messageTypes = {
+            user: (message) => `
+                <div class="flex justify-end message-animation">
+                    <div class="
+                        max-w-[70%] 
+                        bg-gradient-to-r 
+                        from-blue-500 
+                        to-purple-600 
+                        text-white 
+                        rounded-xl 
+                        rounded-br-none 
+                        p-4 
+                        shadow-md
+                    ">
+                        <p>${message}</p>
+                    </div>
+                </div>
+            `,
+            ai: (message) => `
+                <div class="flex justify-start message-animation">
+                    <div class="
+                        max-w-[70%] 
+                        bg-white 
+                        border 
+                        border-gray-200 
+                        rounded-xl 
+                        rounded-tl-none 
+                        p-4 
+                        shadow-sm
+                    ">
+                        <p class="text-gray-700">${message}</p>
+                    </div>
+                </div>
+            `
+        };
+
+        // Send Message Function
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                // Add user message
+                chatContainer.innerHTML += messageTypes.user(message);
+
+                // Clear input
+                chatInput.value = '';
+
+                // Simulate AI response
+                setTimeout(() => {
+                    const responses = [
+                        "That's an interesting point!",
+                        "Could you tell me more about that?",
+                        "I'm here to help. What specific information do you need?",
+                        "Fascinating! Let's explore that further."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    
+                    chatContainer.innerHTML += messageTypes.ai(randomResponse);
+                    
+                    // Scroll to bottom
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 1000);
+
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Event Listeners
+        sendButton.addEventListener('click', sendMessage);
+
+        // Enter key to send message
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

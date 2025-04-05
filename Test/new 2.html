@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiline Chat Input</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Textarea auto-grow */
+        #chatInput {
+            resize: none;
+            min-height: 100px;
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex">
+    <!-- Sidebar (from previous example) -->
+    <div class="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
+        <!-- Sidebar content remains the same -->
+    </div>
+
+    <!-- Main Chat Interface -->
+    <main class="flex-1 flex flex-col">
+        <!-- Chat Header -->
+        <div class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img 
+                    src="https://via.placeholder.com/40" 
+                    alt="AI Assistant" 
+                    class="w-10 h-10 rounded-full mr-3"
+                >
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">AI Assistant</h2>
+                    <p class="text-xs text-gray-500">Online</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="text-gray-600 hover:text-blue-500">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="text-gray-600 hover:text-blue-500">
+                    <i class="fas fa-phone"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-4">
+            <!-- Chat messages will be dynamically added here -->
+            <div class="flex justify-start">
+                <div class="max-w-[70%] bg-white border border-gray-200 rounded-lg p-4">
+                    <p>Hello! I'm your AI assistant. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Section -->
+        <div class="p-4 bg-white border-t border-gray-200">
+            <div class="relative">
+                <!-- Microphone Button -->
+                <button class="absolute left-3 top-3 text-gray-500 hover:text-blue-500">
+                    <i class="fas fa-microphone"></i>
+                </button>
+
+                <!-- Multiline Input -->
+                <textarea 
+                    id="chatInput"
+                    rows="4"
+                    class="
+                        w-full 
+                        pl-10 
+                        pr-20 
+                        py-3 
+                        border 
+                        border-gray-300 
+                        rounded-lg 
+                        focus:outline-none 
+                        focus:ring-2 
+                        focus:ring-blue-500 
+                        resize-none 
+                        custom-scrollbar
+                    "
+                    placeholder="Type your message..."
+                ></textarea>
+
+                <!-- Action Buttons -->
+                <div class="absolute right-3 bottom-3 flex items-center space-x-2">
+                    <!-- Emoji Button -->
+                    <button class="text-gray-500 hover:text-blue-500">
+                        <i class="fas fa-smile"></i>
+                    </button>
+
+                    <!-- Attachment Button -->
+                    <button class="text-gray-500 hover:text-blue-500">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+
+                    <!-- Send Button -->
+                    <button 
+                        id="sendButton"
+                        class="
+                            bg-blue-500 
+                            text-white 
+                            rounded-full 
+                            w-10 
+                            h-10 
+                            flex 
+                            items-center 
+                            justify-center 
+                            hover:bg-blue-600 
+                            transition
+                        "
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const chatContainer = document.getElementById('chatContainer');
+
+        // Auto-grow textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        });
+
+        // Send Message Function
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                // Create user message element
+                const userMessageElement = document.createElement('div');
+                userMessageElement.className = 'flex justify-end';
+                userMessageElement.innerHTML = `
+                    <div class="max-w-[70%] bg-blue-500 text-white rounded-lg p-4">
+                        <p>${message}</p>
+                    </div>
+                `;
+
+                // Add user message to chat container
+                chatContainer.appendChild(userMessageElement);
+
+                // Clear input
+                chatInput.value = '';
+                chatInput.style.height = 'auto';
+
+                // Simulate AI response
+                setTimeout(() => {
+                    const aiResponseElement = document.createElement('div');
+                    aiResponseElement.className = 'flex justify-start';
+                    aiResponseElement.innerHTML = `
+                        <div class="max-w-[70%] bg-white border border-gray-200 rounded-lg p-4">
+                            <p>I received your message: "${message}". How else can I assist you?</p>
+                        </div>
+                    `;
+
+                    // Add AI response to chat container
+                    chatContainer.appendChild(aiResponseElement);
+
+                    // Scroll to bottom
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 1000);
+
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        // Event Listeners
+        sendButton.addEventListener('click', sendMessage);
+
+        // Allow sending message with Enter key
+        chatInput.addEventListener('keydown', (e) => {
+            // Send on Enter, but allow shift+enter for new line
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

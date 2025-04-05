@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Model Configuration Modal</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Modal Container -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-white">
+                        <i class="fas fa-robot mr-3"></i>
+                        Large Language Model Configuration
+                    </h2>
+                    <button class="text-white hover:text-gray-200">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6">
+                <!-- Model Selection Section -->
+                <section class="mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-brain text-blue-500 mr-2"></i>
+                        Select Language Model
+                    </h3>
+                    
+                    <!-- Model Selection Grid -->
+                    <div id="modelGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Model Template (Will be populated dynamically) -->
+                        <template id="modelTemplate">
+                            <div class="model-card cursor-pointer border rounded-lg p-4 hover:bg-gray-50 transition">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="model-name text-lg font-bold"></h4>
+                                    <span class="model-badge text-xs px-2 py-1 rounded"></span>
+                                </div>
+                                <p class="model-description text-sm text-gray-600 mb-3"></p>
+                                <div class="model-details space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-xs text-gray-500">Context Length:</span>
+                                        <span class="model-context-length text-xs font-medium"></span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-xs text-gray-500">Training Data:</span>
+                                        <span class="model-training-data text-xs font-medium"></span>
+                                    </div>
+                                </div>
+                                <div class="mt-4 flex items-center justify-between">
+                                    <span class="model-provider text-xs text-gray-500"></span>
+                                    <div class="model-select-indicator w-5 h-5 border-2 rounded-full"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </section>
+
+                <!-- Advanced Settings Section -->
+                <section id="advancedSettings" class="hidden">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-sliders-h text-green-500 mr-2"></i>
+                        Advanced Model Configuration
+                    </h3>
+
+                    <!-- Dynamic Settings Container -->
+                    <div id="modelSpecificSettings" class="space-y-4">
+                        <!-- Settings will be dynamically populated -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-100 p-6 flex justify-end space-x-4">
+                <button id="cancelButton" class="
+                    px-4 
+                    py-2 
+                    bg-gray-200 
+                    text-gray-800 
+                    rounded-lg 
+                    hover:bg-gray-300 
+                    transition
+                ">
+                    Cancel
+                </button>
+                <button id="saveButton" class="
+                    px-4 
+                    py-2 
+                    bg-blue-500 
+                    text-white 
+                    rounded-lg 
+                    hover:bg-blue-600 
+                    transition
+                    disabled:opacity-50
+                    disabled:cursor-not-allowed
+                " disabled>
+                    Configure Model
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LLM Model Configuration
+        const llmModels = [
+            {
+                id: 'gpt-3.5-turbo',
+                name: 'GPT-3.5 Turbo',
+                description: 'Powerful and cost-effective general-purpose model',
+                provider: 'OpenAI',
+                badge: 'Recommended',
+                badgeClass: 'bg-green-100 text-green-800',
+                contextLength: '4,096 tokens',
+                trainingData: 'Up to Sep 2021',
+                settings: [
+                    { 
+                        type: 'range', 
+                        label: 'Temperature', 
+                        min: 0, 
+                        max: 1, 
+                        step: 0.1, 
+                        default: 0.7 
+                    },
+                    { 
+                        type: 'number', 
+                        label: 'Max Tokens', 
+                        min: 10, 
+                        max: 4096, 
+                        default: 1024 
+                    }
+                ]
+            },
+            {
+                id: 'gpt-4',
+                name: 'GPT-4',
+                description: 'Most advanced and capable model with superior reasoning',
+                provider: 'OpenAI',
+                badge: 'Premium',
+                badgeClass: 'bg-purple-100 text-purple-800',
+                contextLength: '8,192 tokens',
+                trainingData: 'Up to Dec 2022',
+                settings: [
+                    { 
+                        type: 'range', 
+                        label: 'Temperature', 
+                        min: 0, 
+                        max: 1, 
+                        step: 0.1, 
+                        default: 0.5 
+                    },
+                    { 
+                        type: 'number', 
+                        label: 'Max Tokens', 
+                        min: 10, 
+                        max: 8192, 
+                        default: 2048 
+                    }
+                ]
+            },
+            {
+                id: 'claude-2',
+                name: 'Claude 2',
+                description: 'Anthropic\'s advanced conversational AI model',
+                provider: 'Anthropic',
+                badge: 'New',
+                badgeClass: 'bg-blue-100 text-blue-800',
+                contextLength: '100,000 tokens',
+                trainingData: 'Up to early 2023',
+                settings: [
+                    { 
+                        type: 'range', 
+                        label: 'Creativity', 
+                        min: 0, 
+                        max: 1, 
+                        step: 0.1, 
+                        default: 0.6 
+                    },
+                    { 
+                        type: 'number', 
+                        label: 'Max Tokens', 
+                        min: 10, 
+                        max: 100000, 
+                        default: 4096 
+                    }
+                ]
+            }
+        ];
+
+        // DOM Elements
+        const modelGrid = document.getElementById('modelGrid');
+        const modelTemplate = document.getElementById('modelTemplate');
+        const advancedSettings = document.getElementById('advancedSettings');
+        const modelSpecificSettings = document.getElementById('modelSpecificSettings');
+        const saveButton = document.getElementById('saveButton');
+        const cancelButton = document.getElementById('cancelButton');
+
+        // Render Models
+        function renderModels() {
+            llmModels.forEach(model => {
+                const modelCard = modelTemplate.content.cloneNode(true);
+                
+                // Populate model card
+                modelCard.querySelector('.model-name').textContent = model.name;
+                modelCard.querySelector('.model-description').textContent = model.description;
+                modelCard.querySelector('.model-badge').textContent = model.badge;
+                modelCard.querySelector('.model-badge').className = `model-badge ${model.badgeClass}`;
+                modelCard.querySelector('.model-context-length').textContent = model.contextLength;
+                modelCard.querySelector('.model-training-data').textContent = model.trainingData;
+                modelCard.querySelector('.model-provider').textContent = model.provider;
+
+                // Add click event to select model
+                const cardElement = modelCard.querySelector('.model-card');
+                cardElement.dataset.modelId = model.id;
+                cardElement.addEventListener('click', () => selectModel(model));
+
+                modelGrid.appendChild(modelCard);
+            });
+        }
+
+        // Select Model
+        function selectModel(selectedModel) {
+            // Remove selection from all cards
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.querySelector('.model-select-indicator').classList.remove('bg-blue-500');
+            });
+
+            // Highlight selected card
+            const selectedCard = document.querySelector(`[data-model-id="${selectedModel.id}"]`);
+            selectedCard.classList.add('border-blue-500', 'bg-blue-50');
+            selectedCard.querySelector('.model-select-indicator').classList.add('bg-blue-500');
+
+            // Render model-specific settings
+            renderModelSettings(selectedModel);
+
+            // Enable save button
+            saveButton.disabled = false;
+        }
+
+        // Render Model-Specific Settings
+        function renderModelSettings(model) {
+            // Clear previous settings
+            modelSpecificSettings.innerHTML = '';
+            advancedSettings.classList.remove('hidden');
+
+            // Render new settings
+            model.settings.forEach(setting => {
+                const settingContainer = document.createElement('div');
+                settingContainer.innerHTML = `
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        ${setting.label}
+                    </label>
+                `;
+
+                const input = document.createElement('input');
+                input.type = setting.type;
+                input.min = setting.min;
+                input.max = setting.max;
+                input.step = setting.step || 1;
+                input.value = setting.default;
+                input.className = `
+                    w-full 
+                    ${setting.type === 'range' 
+                        ? 'h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer' 
+                        : 'px-3 py-2 border border-gray-300 rounded-lg'}
+                `;
+
+                settingContainer.appendChild(input);
+                modelSpecificSettings.appendChild(settingContainer);
+            });
+        }
+
+        // Initialize
+        renderModels();
+
+        // Event Listeners
+        saveButton.addEventListener('click', () => {
+            const selectedModel = document.querySelector('.model-card.border-blue-500');
+            if (selectedModel) {
+                const modelId = selectedModel.dataset.modelId;
+                const modelSettings = {};
+
+                // Collect settings
+                document.querySelectorAll('#modelSpecificSettings input').forEach(input => {
+                    modelSettings[input.previousElementSibling.textContent] = input.value;
+                });
+
+                console.log('Selected Model:', modelId);
+                console.log('Model Settings:', modelSettings);
+                
+                // You can add your save/configuration logic here
+                alert('Model configuration saved!');
+            }
+        });
+
+        cancelButton.addEventListener('click', () => {
+            // Close modal or reset selection
+            document.querySelectorAll('.model-card').forEach(card => {
+                card.classList.remove('border-blue-500', 'bg-blue-50');
+                card.querySelector('.model-select-indicator').classList.remove('bg-blue-500');
+            });
+            advancedSettings.classList.add('hidden');
+            saveButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
